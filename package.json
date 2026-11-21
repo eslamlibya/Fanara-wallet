@@ -1,0 +1,8 @@
+{
+  "name": "fanara-wallet",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Fanara Wallet: single-file PWA + zero-dependency Node server with SQLite ledger",
+  "engines": { "node": ">=22.5" },
+  "scripts": { "start": "node --no-warnings server/server.js", "test": "node --no-warnings server/test.js && node tests.js index.html" }
+}

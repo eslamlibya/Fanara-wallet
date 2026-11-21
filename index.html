@@ -163,7 +163,7 @@ function buy(){
   S.order={p:p,den:S.p.den,t:t,code:"DEMO-"+g()+"-"+g()+"-"+g()};S.v="rcpt"}
  catch(e){S.err=e.message}
  S.busy=false;S.confirm=false;rd()}
-function rcpt(){var o=S.order;return hbar("إيصال العملية")+'<main><div class="card" style="text-align:center"><div class="ic" style="background:rgba(42,157,98,.12);color:var(--grn);width:64px;height:64px;border-radius:50%">'+I("check",34)+'</div><h3>تمت العملية بنجاح</h3></div><div class="card">'+kv("الكرت",o.p.n)+kv("القيمة",o.den+' د.ل')+kv("المحفظة",A(o.t.acc).n)+kv("الرقم المرجعي",o.t.ref)+kv("التاريخ",o.t.date)+kv("الرمز",'<span dir="ltr">'+o.code+'</span>')+kv("الرصيد بعد العملية",mny(o.t.bal,3)+' د.ل')+'<small style="color:var(--mut)">الرمز لأغراض العرض فقط وغير صالح للاستخدام. لم تُنفذ أي عملية مصرفية حقيقية.</small></div><button class="btn" onclick="vw(\'store\')">العودة للمتجر</button><button class="btn o" onclick="vw(\'hist\')">سجل الحركات</button></main>'+nav()}
+function rcpt(){var o=S.order;return hbar("إيصال العملية")+'<main><div class="card" style="text-align:center"><div class="ic" style="background:rgba(42,157,98,.12);color:var(--grn);width:64px;height:64px;border-radius:50%">'+I("check",34)+'</div><h3>تمت العملية بنجاح</h3></div><div class="card">'+kv("الكرت",o.p.n)+kv("القيمة",o.den+' د.ل')+kv("المحفظة",A(o.t.acc).n)+kv("الرقم المرجعي",o.t.ref)+kv("التاريخ",o.t.date)+kv("الرمز",'<span dir="ltr">'+o.code+'</span>')+kv("الرصيد بعد العملية",mny(o.t.bal,3)+' د.ل')+''+ftr2()+'</div><button class="btn" onclick="vw(\'store\')">العودة للمتجر</button><button class="btn o" onclick="vw(\'hist\')">سجل الحركات</button></main>'+nav()}
 function hist(){
  var L=D.tx.filter(function(t){return S.f==="all"||(S.f==="out"?t.amt<0:t.amt>0)});
  var ch=[["all","الكل"],["out","صادر"],["in","وارد"]].map(function(x){return '<button class="chip '+(S.f===x[0]?"on":"")+'" onclick="S.f=\''+x[0]+'\';rd()">'+x[1]+'</button>'}).join("");
@@ -182,7 +182,7 @@ function doX(){
  S.err=e;rd()}
 function prof(){
  var th={auto:"نظام",light:"فاتح",dark:"داكن"}[S.theme];
- return hdr("الملف الشخصي")+'<main><div class="card">'+li("user","المعلومات الشخصية","إسلام","tt('المعلومات الشخصية')")+li("shield","بصمة الوجه أو الإصبع","غير منفذة","tt('غير متاحة حاليًا')")+li("key","تغيير كلمة المرور","غير منفذة","tt('غير متاحة حاليًا')")+'</div><div class="card">'+li("globe","اللغة","العربية","tt('العربية')")+li("moon","المظهر",th,"cyc()")+li("swap","إعادة ضبط التطبيق","استرجاع الأرصدة والحركات الأصلية","rs()")+'</div><div class="card">'+li("help","الأسئلة الشائعة","","tt('قريبًا')")+li("info","حول التطبيق","الإصدار 1.1","tt('Fanara Wallet 1.1 – نموذج أولي: البيانات غير حقيقية ولا تتم أي عمليات مالية فعلية')")+'</div><div class="card"><div class="li out" role="button" tabindex="0" onclick="S.login=false;save();rd()"><div class="lr"><div class="ic sm r">'+I("out2",22)+'</div><b>تسجيل الخروج</b></div></div></div></main>'+nav()}
+ return hdr("الملف الشخصي")+'<main><div class="card">'+li("user","المعلومات الشخصية",(S.user?S.user.name:"المستخدم"),"tt('المعلومات الشخصية')")+li("shield","بصمة الوجه أو الإصبع","غير منفذة","tt('غير متاحة حاليًا')")+li("key","تغيير كلمة المرور","غير منفذة","tt('غير متاحة حاليًا')")+'</div><div class="card">'+li("globe","اللغة","العربية","tt('العربية')")+li("moon","المظهر",th,"cyc()")+li("swap","إعادة ضبط التطبيق","استرجاع الأرصدة والحركات الأصلية","rs()")+'</div><div class="card">'+li("help","الأسئلة الشائعة","","tt('قريبًا')")+li("info","حول التطبيق","الإصدار 1.1","tt('Fanara Wallet 1.1 – نموذج أولي: البيانات غير حقيقية ولا تتم أي عمليات مالية فعلية')")+'</div><div class="card"><div class="li out" role="button" tabindex="0" onclick="lo()"><div class="lr"><div class="ic sm r">'+I("out2",22)+'</div><b>تسجيل الخروج</b></div></div></div></main>'+nav()}
 function cyc(){S.theme=S.theme==="auto"?"light":S.theme==="light"?"dark":"auto";save();ap();rd()}
 function rs(){D=clone(DEF);save();tt("تمت إعادة ضبط التطبيق")}
 function lg(){return '<div class="login">'+BR()+'<p style="opacity:.85;margin:6px 0 60px">تسجيل الدخول</p><div class="card" style="color:var(--txt);text-align:right"><label>رقم الهاتف</label><input id="lu" inputmode="numeric" value="0912345678"><label>كلمة المرور</label><input id="lp" type="password" value="demo">'+(S.err?'<div class="err" role="alert">'+S.err+'</div>':'')+'<button class="btn" onclick="doL()">تسجيل الدخول</button></div></div>'}
@@ -232,7 +232,7 @@ function csend(){
   var t=post("cur",-o.m,"إرسال إلى "+o.name,"send"),f=post("cur",-FEE,"رسوم إرسال إلى "+o.name,"fee");save();S.so={n:o.name,ph:o.ph,m:o.m,t:t,f:f};S.v="srcpt";S.s={};S.err=""}
  catch(e){S.err=e.message}
  S.busy=false;S.sc=null;rd()}
-function srcpt(){var o=S.so;return hbar("إيصال الإرسال")+'<main><div class="card" style="text-align:center"><div class="ic" style="background:rgba(42,157,98,.12);color:var(--grn);width:64px;height:64px;border-radius:50%">'+I("check",34)+'</div><h3>تم الإرسال</h3></div><div class="card">'+kv("المستلم",esc(o.n)+" ("+o.ph+")")+kv("المبلغ",mny(o.m,3)+" د.ل")+kv("الرسوم",mny(FEE,3)+" د.ل")+kv("الإجمالي",mny(o.m+FEE,3)+" د.ل")+kv("الرقم المرجعي",o.t.ref)+kv("التاريخ",o.t.date)+kv("الرصيد بعد العملية",mny(o.f.bal,3)+" د.ل")+'<small style="color:var(--mut)">نموذج أولي: لا تمثل هذه العملية حركة مالية فعلية.</small></div><button class="btn" onclick="vw(\'hist\')">سجل الحركات</button></main>'+nav()}
+function srcpt(){var o=S.so;return hbar("إيصال الإرسال")+'<main><div class="card" style="text-align:center"><div class="ic" style="background:rgba(42,157,98,.12);color:var(--grn);width:64px;height:64px;border-radius:50%">'+I("check",34)+'</div><h3>تم الإرسال</h3></div><div class="card">'+kv("المستلم",esc(o.n)+" ("+o.ph+")")+kv("المبلغ",mny(o.m,3)+" د.ل")+kv("الرسوم",mny(FEE,3)+" د.ل")+kv("الإجمالي",mny(o.m+FEE,3)+" د.ل")+kv("الرقم المرجعي",o.t.ref)+kv("التاريخ",o.t.date)+kv("الرصيد بعد العملية",mny(o.f.bal,3)+" د.ل")+''+ftr()+'</div><button class="btn" onclick="vw(\'hist\')">سجل الحركات</button></main>'+nav()}
 function topv(){return hbar("شحن المحفظة")+'<main><div class="card"><label>رمز الشحن</label><input id="tc" dir="ltr" placeholder="أدخل رمز الشحن" value="'+esc(S.tc||"")+'">'+(S.err?'<div class="err" role="alert">'+S.err+'</div>':'')+'<button class="btn" onclick="doT()">شحن المحفظة الرئيسية</button></div></main>'+nav()}
 function doT(){
  var c=document.getElementById("tc").value.trim().toUpperCase();S.tc=c;D.used=D.used||[];
@@ -324,13 +324,66 @@ function qpay(){var q=S.qp;if(!q||S.busy||S.su===q.k)return;
  S.busy=true;S.su=q.k;
  try{var t=post("cur",-m,"دفع QR إلى "+q.name,"qr");save();S.qo={n:q.name,c:q.code,m:m,t:t};S.qp=null;S.v="qrrc";S.err=""}catch(e){S.err=e.message}
  S.busy=false;rd()}
-function qrrc(){var o=S.qo;return hbar("إيصال الدفع")+'<main><div class="card" style="text-align:center"><div class="ic" style="background:rgba(42,157,98,.12);color:var(--grn);width:64px;height:64px;border-radius:50%">'+I("check",34)+'</div><h3>تم الدفع</h3></div><div class="card">'+kv("المستلم",esc(o.n))+kv("المبلغ",mny(o.m,3)+" د.ل")+kv("الرقم المرجعي",o.t.ref)+kv("التاريخ",o.t.date)+kv("الرصيد بعد العملية",mny(o.t.bal,3)+" د.ل")+'<small style="color:var(--mut)">نموذج أولي: لا تمثل هذه العملية حركة مالية فعلية.</small></div><button class="btn" onclick="vw(\'hist\')">سجل الحركات</button></main>'+nav()}
+function qrrc(){var o=S.qo;return hbar("إيصال الدفع")+'<main><div class="card" style="text-align:center"><div class="ic" style="background:rgba(42,157,98,.12);color:var(--grn);width:64px;height:64px;border-radius:50%">'+I("check",34)+'</div><h3>تم الدفع</h3></div><div class="card">'+kv("المستلم",esc(o.n))+kv("المبلغ",mny(o.m,3)+" د.ل")+kv("الرقم المرجعي",o.t.ref)+kv("التاريخ",o.t.date)+kv("الرصيد بعد العملية",mny(o.t.bal,3)+" د.ل")+''+ftr()+'</div><button class="btn" onclick="vw(\'hist\')">سجل الحركات</button></main>'+nav()}
 function cp(t){try{navigator.clipboard.writeText(t).then(function(){tt("تم النسخ")},function(){tt("تعذر النسخ")})}catch(e){tt("تعذر النسخ")}}
 var _vw=vw;vw=function(v,x){_vw(v,x);try{history.pushState({v:v},"")}catch(e){}};
 if(window.addEventListener){window.addEventListener("popstate",function(){if(S.v)back()})}
-ld();ap();
+/* ===== Server mode: when served by the Fanara server (has /api/health) all money lives on the server ===== */
+var SV={on:false,tok:null,live:false};
+function mk(){var a=new Uint8Array(12);try{crypto.getRandomValues(a)}catch(e){for(var i=0;i<12;i++)a[i]=Math.random()*256}return "k"+Array.prototype.map.call(a,function(x){return ("0"+x.toString(16)).slice(-2)}).join("")}
+function ftr(){return SV.on&&SV.live?"":'<small style="color:var(--mut)">نموذج أولي: لا تمثل هذه العملية حركة مالية فعلية.</small>'}
+function ftr2(){return SV.on?ftr():'<small style="color:var(--mut)">الرمز لأغراض العرض فقط وغير صالح للاستخدام. لم تُنفذ أي عملية مصرفية حقيقية.</small>'}
+function api(m,p,b){var h={"content-type":"application/json"};if(SV.tok)h.authorization="Bearer "+SV.tok;
+ return fetch(p,{method:m,headers:h,body:b?JSON.stringify(b):undefined}).then(function(r){return r.json().then(function(j){if(r.status===401&&SV.tok&&p.indexOf("/api/login")<0){svOut("انتهت الجلسة. سجّل الدخول من جديد")}return j},function(){return {ok:false,error:"خطأ في الاتصال"}})})}
+function neterr(){S.busy=false;S.err="تعذر الاتصال بالخادم. أعد المحاولة (لن تُنفَّذ العملية مرتين)";rd()}
+function svSave(){try{localStorage.setItem("fanara3",JSON.stringify({theme:S.theme,login:false}))}catch(e){}}
+function svOut(msg){SV.tok=null;try{localStorage.removeItem("fw_tok")}catch(e){}S.login=false;S.v="";S.tab="home";S.user=null;D=clone(DEF);D.accs=[];D.tx=[];S.err=msg||"";rd()}
+function lo(){if(SV.on)svOut("");else{S.login=false;save();rd()}}
+function sync(done){return api("GET","/api/state").then(function(j){if(j&&j.ok){D={seq:1,hid:D.hid||{},accs:j.accs,tx:j.tx};S.user=j.user;S.login=true}rd();if(done)done(j)},function(){S.err="تعذر الاتصال بالخادم";rd()})}
+function svInit(){
+ var done=false,ac=window.AbortController?new AbortController():null,t=setTimeout(function(){if(ac)ac.abort()},4000);
+ fetch("/api/health",ac?{signal:ac.signal}:{}).then(function(r){return r.json()}).then(function(j){clearTimeout(t);if(!j||!j.ok)throw 0;
+  SV.on=true;SV.live=!!j.live;SV.open=!!j.open;BASE=location.origin+"/";CT=[];save=svSave;rs=function(){tt("غير متاح")};
+  D=clone(DEF);D.accs=[];D.tx=[];S.login=false;
+  try{SV.tok=localStorage.getItem("fw_tok")}catch(e){}
+  S.boot=false;if(SV.tok){sync(function(j2){if(!j2||!j2.ok){SV.tok=null}if(S.pq&&S.login){var p=S.pq;S.pq=null;qrOpen(p.code,p.a)}})}else rd()
+ }).catch(function(){clearTimeout(t);S.boot=false;if(S.login&&S.pq){var p=S.pq;S.pq=null;qrOpen(p.code,p.a)}rd()})}
+var _rd2=rd;rd=function(){if(S.boot){var a=document.getElementById("app");if(a)a.innerHTML='<div class="login">'+BR()+'</div>';return}_rd2()};
+var _lg=lg;lg=function(){if(!SV.on)return _lg();if(S.fp)return fpv();
+ if(S.reg)return '<div class="login">'+BR()+'<p style="opacity:.85;margin:6px 0 30px">إنشاء حساب</p><div class="card" style="color:var(--txt);text-align:right"><label>الاسم</label><input id="rn" maxlength="40"><label>رقم الهاتف</label><input id="rp" inputmode="numeric" placeholder="09xxxxxxxx"><label>كلمة المرور (8 أحرف على الأقل)</label><input id="rw" type="password"><label>رمز الدعوة</label><input id="ri" dir="ltr" autocapitalize="characters">'+(S.err?'<div class="err" role="alert">'+S.err+'</div>':'')+'<button class="btn" onclick="doR()">إنشاء الحساب</button><button class="btn o" onclick="S.reg=false;S.err=\'\';rd()">لدي حساب</button></div></div>';
+ return '<div class="login">'+BR()+'<p style="opacity:.85;margin:6px 0 60px">تسجيل الدخول</p><div class="card" style="color:var(--txt);text-align:right"><label>رقم الهاتف</label><input id="lu" inputmode="numeric" placeholder="09xxxxxxxx"><label>كلمة المرور</label><input id="lp" type="password">'+(S.err?'<div class="err" role="alert">'+S.err+'</div>':'')+'<button class="btn" onclick="doL()">تسجيل الدخول</button><button class="btn o" onclick="S.reg=true;S.err=\'\';rd()">إنشاء حساب بدعوة</button><button class="btn o" onclick="S.fp=true;S.err=\'\';rd()">نسيت كلمة المرور؟</button></div></div>'};
+var _doL=doL;doL=function(){if(!SV.on)return _doL();var u=document.getElementById("lu").value.trim(),p=document.getElementById("lp").value;if(!u||!p){S.err="أدخل رقم الهاتف وكلمة المرور";rd();return}if(S.busy)return;S.busy=true;
+ api("POST","/api/login",{phone:u,password:p}).then(function(j){S.busy=false;if(j.ok){SV.tok=j.token;try{localStorage.setItem("fw_tok",j.token)}catch(e){}S.err="";S.tab="home";S.v="";sync(function(){if(S.pq){var q=S.pq;S.pq=null;qrOpen(q.code,q.a)}})}else{S.err=j.error;rd()}},neterr)};
+function doR(){var b={name:document.getElementById("rn").value.trim(),phone:document.getElementById("rp").value.trim(),password:document.getElementById("rw").value,invite:document.getElementById("ri").value.trim()};if(S.busy)return;S.busy=true;
+ api("POST","/api/register",b).then(function(j){S.busy=false;if(j.ok){S.reg=false;S.err="";api("POST","/api/login",{phone:b.phone,password:b.password}).then(function(l){if(l.ok){SV.tok=l.token;try{localStorage.setItem("fw_tok",l.token)}catch(e){}sync()}else{rd()}})}else{S.err=j.error;rd()}},neterr)}
+var _fpv=fpv;fpv=function(){var h=_fpv();return SV.on?h.replace("هذه الخدمة غير متاحة حاليًا.","لإعادة تعيين كلمة المرور تواصل مع الإدارة وأعطهم رقم هاتفك."):h};
+var _sendv=sendv;sendv=function(){var h=_sendv();return SV.on?h.replace(/<small[^>]*>المحافظ المتاحة:[\s\S]*?<\/small>/,'<small style="color:var(--mut);display:block;margin-bottom:10px">الإرسال من المحفظة الرئيسية، ورسومه 0.500 د.ل.</small>'):h};
+var _doS=doS;doS=function(){if(!SV.on)return _doS();var ph=document.getElementById("sp").value.trim(),a=document.getElementById("sa").value.trim();S.s={ph:ph,a:a};
+ var e="",m=0;if(!/^09\d{8}$/.test(ph))e="أدخل رقم هاتف صحيحًا (10 أرقام يبدأ بـ 09)";else if(!/^\d+(\.\d{1,3})?$/.test(a))e="أدخل مبلغًا صحيحًا (حتى 3 منازل عشرية)";else{m=Math.round(parseFloat(a)*1000);if(m<=0)e="يجب أن يكون المبلغ أكبر من صفر";else if(m+FEE>A("cur").m)e="الرصيد غير كافٍ (المبلغ + الرسوم)"}
+ if(e){S.err=e;rd();return}
+ api("GET","/api/payee?phone="+ph).then(function(j){if(j.ok){S.err="";S.sc={name:j.name,ph:ph,m:m,k:Math.random(),key:mk()}}else S.err=j.error;rd()},neterr)};
+var _csend=csend;csend=function(){if(!SV.on)return _csend();var o=S.sc;if(!o||S.busy)return;S.busy=true;
+ api("POST","/api/send",{phone:o.ph,amount:o.m,key:o.key}).then(function(j){S.busy=false;if(j.ok){S.so={n:o.name,ph:o.ph,m:o.m,t:{ref:j.ref,date:j.date},f:{bal:j.bal}};S.v="srcpt";S.s={};S.err="";S.sc=null;sync()}else{S.err=j.error;S.sc=null;rd()}},function(){S.busy=false;S.err="تعذر الاتصال بالخادم. اضغط تأكيد مرة أخرى (لن تُنفَّذ العملية مرتين)";rd()})};
+var _doX=doX;doX=function(){if(!SV.on)return _doX();if(S.busy)return;var f=document.getElementById("xf").value,t=document.getElementById("xt").value,a=document.getElementById("xa").value.trim();S.x={from:f,to:t,a:a};
+ var e="";if(f===t)e="اختر محفظتين مختلفتين";else if(!/^\d+(\.\d{1,3})?$/.test(a))e="أدخل مبلغًا صحيحًا (أرقام فقط، حتى 3 منازل عشرية)";else if(Math.round(parseFloat(a)*1000)<=0)e="يجب أن يكون المبلغ أكبر من صفر";
+ if(e){S.err=e;rd();return}S.busy=true;S.xk=S.xk||mk();
+ api("POST","/api/transfer",{from:f,to:t,amount:Math.round(parseFloat(a)*1000),key:S.xk}).then(function(j){S.busy=false;if(j.ok){S.xk=null;S.x={};S.v="";S.tab="home";S.err="";sync(function(){tt("تم التحويل")})}else{S.xk=null;S.err=j.error;rd()}},neterr)};
+var _doT=doT;doT=function(){if(!SV.on)return _doT();var c=document.getElementById("tc").value.trim().toUpperCase();S.tc=c;if(!c){S.err="أدخل رمز الشحن";rd();return}if(S.busy)return;S.busy=true;S.tk=S.tk||mk();
+ api("POST","/api/topup",{code:c,key:S.tk}).then(function(j){S.busy=false;S.tk=null;if(j.ok){S.tc="";S.err="";S.v="";S.tab="home";sync(function(){tt("تم الشحن")})}else{S.err=j.error;rd()}},function(){S.busy=false;S.err="تعذر الاتصال بالخادم. أعد المحاولة (لن تُنفَّذ العملية مرتين)";rd()})};
+var _qrOpen=qrOpen;qrOpen=function(code,a){if(!SV.on)return _qrOpen(code,a);if(!/^W-\d{4}-\d{4}-\d{4}$/.test(code)){tt("رمز غير معروف");return}
+ api("GET","/api/payee?no="+code).then(function(j){if(!j.ok){tt(j.error);return}var m=0;if(a){m=Math.round(parseFloat(a)*1000)}vw("qrcf",{qp:{name:j.name,code:code,m:m,fix:!!m,k:Math.random(),key:mk()}})},function(){tt("تعذر الاتصال بالخادم")})};
+var _qpay=qpay;qpay=function(){if(!SV.on)return _qpay();var q=S.qp;if(!q||S.busy)return;var v=document.getElementById("qa").value.trim(),m;
+ if(q.fix)m=q.m;else{if(!/^\d+(\.\d{1,3})?$/.test(v)){S.err="أدخل مبلغًا صحيحًا (حتى 3 منازل عشرية)";rd();return}m=Math.round(parseFloat(v)*1000)}
+ if(m<=0){S.err="يجب أن يكون المبلغ أكبر من صفر";rd();return}if(m>A("cur").m){S.err="الرصيد غير كافٍ";rd();return}
+ S.busy=true;api("POST","/api/qrpay",{no:q.code,amount:m,key:q.key}).then(function(j){S.busy=false;if(j.ok){S.qo={n:q.name,c:q.code,m:m,t:{ref:j.ref,date:j.date,bal:j.bal}};S.qp=null;S.v="qrrc";S.err="";sync()}else{S.err=j.error;rd()}},neterr)};
+var _qrv=qrv;qrv=function(){var h=_qrv();return SV.on?h.replace(/<div class="card"><h3>المتاجر<\/h3>[\s\S]*<\/div><\/main>/,"</main>"):h};
+var _recv=recv;recv=function(){var h=_recv();return SV.on&&S.user?h.split("0912345678").join(S.user.phone):h};
+var _buy=buy;buy=function(){if(!SV.on)return _buy();if(S.busy)return;var p=CAT.filter(function(c){return c.id===S.p.id})[0],den=S.p.den,acc=S.p.acc;S.busy=true;S.ok2=S.ok2||mk();
+ api("POST","/api/order",{product:p.id,den:den,acc:acc,key:S.ok2}).then(function(j){S.busy=false;if(j.ok){S.ok2=null;S.order={p:p,den:den,t:{ref:j.ref,date:j.date,bal:j.bal,acc:acc},code:j.code};S.v="rcpt";S.confirm=false;sync()}else{S.ok2=null;S.err=j.error;S.confirm=false;rd()}},function(){S.busy=false;S.err="تعذر الاتصال بالخادم. اضغط تأكيد مرة أخرى (لن تُنفَّذ العملية مرتين)";rd()})};
+
+ld();ap();S.boot=(location.protocol!=="file:");
 try{var _q=location.search.match(/[?&]pay=([^&#]+)/);if(_q){var _a=location.search.match(/[?&]a=(\d+(?:\.\d{1,3})?)/);S.pq={code:decodeURIComponent(_q[1]),a:_a?_a[1]:""};history.replaceState({},"",location.pathname)}}catch(e){}
-rd();if(S.login&&S.pq){var _p=S.pq;S.pq=null;qrOpen(_p.code,_p.a)}
+rd();if(S.boot){svInit()}else if(S.login&&S.pq){var _p=S.pq;S.pq=null;qrOpen(_p.code,_p.a)}
 if("serviceWorker" in navigator&&location.protocol!=="file:"){navigator.serviceWorker.register("sw.js").catch(function(){})}
 </script>
 </body>

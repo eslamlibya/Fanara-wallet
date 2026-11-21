@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>إدارة فنارة</title>
+<style>body{font-family:system-ui,sans-serif;margin:0;background:#f3f5fa;color:#1a2040}main{max-width:520px;margin:0 auto;padding:16px}
+.c{background:#fff;border-radius:16px;padding:16px;margin-bottom:14px}h1{font-size:20px}h3{margin:0 0 10px}
+input,textarea,select{width:100%;box-sizing:border-box;padding:12px;border:1.5px solid #dfe3f0;border-radius:12px;font-size:16px;margin-bottom:10px}
+button{width:100%;padding:13px;border:0;border-radius:12px;background:#3a5ff0;color:#fff;font-size:16px;margin-bottom:8px}
+pre{white-space:pre-wrap;word-break:break-all;background:#0d1120;color:#d6e0ff;padding:12px;border-radius:12px;font-size:13px;direction:ltr;text-align:left;max-height:320px;overflow:auto}</style></head>
+<body><main><h1>لوحة إدارة فنارة</h1>
+<div class="c"><h3>مفتاح الإدارة</h3><input id="k" type="password" placeholder="ADMIN_KEY" autocomplete="off"><button onclick="sum()">فحص الحالة والتوازن</button></div>
+<div class="c"><h3>رموز دعوة</h3><input id="ic" inputmode="numeric" value="5"><button onclick="call('invites',{count:+v('ic')})">إنشاء رموز دعوة</button></div>
+<div class="c"><h3>رموز شحن (بعد استلام النقد من المستخدم)</h3><input id="ta" inputmode="decimal" placeholder="القيمة بالدينار، مثل 50"><input id="tn" inputmode="numeric" value="1"><button onclick="topup()">إنشاء رموز شحن</button></div>
+<div class="c"><h3>إضافة كروت حقيقية للمخزون</h3><select id="cp"><option value="lib">ليبيانا</option><option value="mad">المدار الجديد</option><option value="ltt">LTT</option><option value="giga">Giga</option><option value="itu">iTunes</option><option value="she">SHEIN</option><option value="bin">Binance</option><option value="etr">eTravel</option></select>
+<input id="cd" inputmode="numeric" placeholder="القيمة بالدينار، مثل 10"><textarea id="cc" rows="4" placeholder="رمز في كل سطر" dir="ltr"></textarea><button onclick="cards()">إضافة</button></div>
+<div class="c"><h3>مستخدم</h3><input id="up" inputmode="numeric" placeholder="09xxxxxxxx"><input id="upw" placeholder="كلمة مرور جديدة (8 أحرف)"><button onclick="call('reset-password',{phone:v('up'),password:v('upw')})">إعادة تعيين كلمة المرور</button>
+<button onclick="call('status',{phone:v('up'),status:'suspended'})" style="background:#c0392b">إيقاف الحساب</button><button onclick="call('status',{phone:v('up'),status:'active'})" style="background:#2a9d62">تفعيل الحساب</button></div>
+<pre id="o">—</pre></main>
+<script>
+function v(i){return document.getElementById(i).value.trim()}
+function out(j){document.getElementById('o').textContent=JSON.stringify(j,null,2)}
+function req(m,p,b){return fetch('/api/admin/'+p,{method:m,headers:{'content-type':'application/json','x-admin-key':v('k')},body:b?JSON.stringify(b):undefined}).then(function(r){return r.json()}).then(out,function(){out({error:'network'})})}
+function call(p,b){return req('POST',p,b)}
+function sum(){return req('GET','summary')}
+function topup(){var a=Math.round(parseFloat(v('ta'))*1000);call('topup-codes',{amount:a,count:+v('tn')})}
+function cards(){call('cards',{product:v('cp'),den:+v('cd'),codes:document.getElementById('cc').value.split('\n')})}
+</script></body></html>
