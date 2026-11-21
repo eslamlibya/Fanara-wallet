@@ -37,7 +37,7 @@ t("home renders after login", app.innerHTML.includes("Fanara Wallet") && app.inn
 inputs.fu = { value: "123" }; api.S.login = false; api.S.fp = true; api.doF();
 t("forgot password: invalid phone rejected", api.S.err.length > 0 && !api.S.fpd);
 inputs.fu.value = "0912345678"; api.doF();
-t("forgot password: simulation message only", api.S.fpd === true && app.innerHTML.includes("محاكاة"));
+t("forgot password: simulation message only", api.S.fpd === true && app.innerHTML.includes("غير متاحة"));
 api.S.login = true; api.S.fp = false;
 
 // 2) Balances and hiding
