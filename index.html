@@ -207,7 +207,7 @@ function lg(){if(S.fp)return fpv();return '<div class="login">'+BR()+'<p style="
 function rd(){
  var y=window.scrollY,a=document.getElementById("acc"),x=a?a.scrollLeft:0;
  var off=(typeof navigator!=="undefined"&&navigator.onLine===false);
- var h=(S.login?'<div class="demo">نسخة تجريبية – بيانات وهمية، لا علاقة لها بأي مصرف حقيقي</div>':'')+(off?'<div class="demo" style="background:#444;color:#fff" role="status">لا يوجد اتصال – تُعرض بيانات تجريبية محلية فقط</div>':''),T=S.toast?'<div class="toast" role="status">'+S.toast+'</div>':"",b;
+ var h=''+(off?'<div class="demo" style="background:#444;color:#fff" role="status">لا يوجد اتصال – تُعرض بيانات تجريبية محلية فقط</div>':''),T=S.toast?'<div class="toast" role="status">'+S.toast+'</div>':"",b;
  if(!S.login){b=lg()}else if(S.v){b={store:store,prod:prod,rcpt:rcpt,hist:hist,txd:txd,xfer:xfer,sendv:sendv,srcpt:srcpt,topv:topv,recv:recv}[S.v]()}else b=S.tab==="home"?home():S.tab==="trf"?trf():prof();
  document.getElementById("app").innerHTML=h+b+T;
  window.scrollTo(0,y);var n=document.getElementById("acc");if(n)n.scrollLeft=x}
