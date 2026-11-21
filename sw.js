@@ -1,4 +1,4 @@
-const V="fanara-v3";const SHELL=["./","./index.html","./manifest.webmanifest","./icon-192.png","./icon-512.png"];
+const V="fanara-v4";const SHELL=["./","./index.html","./manifest.webmanifest","./icon-192.png","./icon-512.png"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)));self.skipWaiting()});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V).map(x=>caches.delete(x)))));self.clients.claim()});
 // App shell only. Demo data lives in localStorage; nothing sensitive is cached.

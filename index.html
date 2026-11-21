@@ -122,7 +122,7 @@ function ap(){var r=document.documentElement;if(S.theme==="auto")r.removeAttribu
 function tt(t){S.toast=t;rd();setTimeout(function(){S.toast="";rd()},2400)}
 function go(t){S.tab=t;S.v="";rd();window.scrollTo(0,0)}
 function vw(v,x){S.v=v;S.err="";if(x)for(var k in x)S[k]=x[k];rd();window.scrollTo(0,0)}
-var BK={prod:"store",rcpt:"store",txd:"hist",store:"",hist:"",xfer:"",sendv:"",srcpt:"",topv:"",recv:""};
+var BK={prod:"store",rcpt:"store",txd:"hist",store:"",hist:"",xfer:"",sendv:"",srcpt:"",topv:"",recv:"",qr:"",qrcf:"qr",qrrc:""};
 function back(){S.v=BK[S.v]||"";S.err="";S.confirm=false;rd()}
 function BR(){return '<div class="brand"><span class="lg">'+LOGO+'</span><b>Fanara Wallet</b></div>'}
 function hbar(t,sub){return '<div class="hd"><div class="hrow"><button class="bk" aria-label="رجوع" onclick="back()">'+I("back",26)+'</button><h1>'+t+'</h1><span style="width:26px"></span></div>'+(sub?'<small>'+sub+'</small>':'')+'</div>'}
@@ -136,13 +136,13 @@ function home(){
  var h='<div class="hd">'+BR()+'<div class="pills">'+tabs+'</div></div><main>';
  if(S.top==="acc"){
   var cards=D.accs.map(function(a){var hd=D.hid[a.id];return '<div class="card"><div class="row"><span>'+a.n+'</span><button class="eye" aria-label="'+(hd?"إظهار":"إخفاء")+' رصيد '+a.n+'" onclick="tg(\''+a.id+'\')">'+I(hd?"eyeoff":"eye",22)+'</button></div><div class="bal">'+(hd?"****":mny(a.m,dg(a)))+' <span>'+a.c+'</span></div><div class="row"><small dir="ltr" style="opacity:.85">'+(hd?"•••• •••• "+a.no.slice(-4):a.no)+'</small><b onclick="tg(\''+a.id+'\')" style="cursor:pointer;font-size:14px">'+(hd?"عرض الرصيد":"إخفاء الرصيد")+'</b></div></div>'}).join("");
-  var sv=[["qr","الدفع برمز QR","tt('قيد التطوير – يحتاج تكاملًا خارجيًا')"],["coins","طلب أموال","tt('قيد التطوير')"],["card","متجر الكروت","vw('store')"],["wplus","شحن المحفظة","vw('topv')"],["file","كشف المحفظة","vw('hist')"],["rec","دفع الفواتير","tt('قريبًا')"],["chart","بياناتي","go('prof')"],["plane","مسافر","tt('قريبًا')"]].map(function(x){return '<button class="sv" onclick="'+x[2]+'"><div class="ic">'+I(x[0],26)+'</div>'+x[1]+'</button>'}).join("");
+  var sv=[["qr","الدفع برمز QR","vw('qr')"],["coins","طلب أموال","tt('قيد التطوير')"],["card","متجر الكروت","vw('store')"],["wplus","شحن المحفظة","vw('topv')"],["file","كشف المحفظة","vw('hist')"],["rec","دفع الفواتير","tt('قريبًا')"],["chart","بياناتي","go('prof')"],["plane","مسافر","tt('قريبًا')"]].map(function(x){return '<button class="sv" onclick="'+x[2]+'"><div class="ic">'+I(x[0],26)+'</div>'+x[1]+'</button>'}).join("");
   h+='<div class="acc" id="acc" onscroll="sc(this)">'+cards+'</div><div class="card"><h3>الخدمات</h3><div class="grid">'+sv+'</div></div><div class="card"><div class="row"><h3>آخر الحركات</h3><b style="color:var(--pri);cursor:pointer" onclick="vw(\'hist\')">عرض الكل</b></div>'+D.tx.slice(0,5).map(txRow).join("")+'</div>'}
  else if(S.top==="cards"){
   h+='<div class="dc"><small>FANARA WALLET · DEMO</small><div style="font-size:22px;letter-spacing:3px;margin:22px 0">•••• •••• •••• 0000</div><small>بطاقة تجريبية – ليست وسيلة دفع</small></div><div class="card"><button class="btn" onclick="vw(\'store\')">متجر الكروت</button></div><div class="card"><h3>مشترياتي من المتجر</h3>'+(D.tx.filter(function(t){return t.type==="card"&&t.id>0}).map(txRow).join("")||'<p style="color:var(--mut)">لا توجد مشتريات بعد.</p>')+'</div>'}
  else{
   var sp=0,inc=0,ct={};D.tx.forEach(function(t){if(t.amt<0)sp-=t.amt;else inc+=t.amt;ct[t.type]=(ct[t.type]||0)+Math.abs(t.amt)});var mx=Math.max(sp,inc,1);
-  var nm={card:"كروت وشحن",cash:"سحب نقدي",fee:"رسوم",transfer:"تحويلات",send:"إرسال",topup:"شحن المحفظة"};
+  var nm={card:"كروت وشحن",qr:"دفع QR",cash:"سحب نقدي",fee:"رسوم",transfer:"تحويلات",send:"إرسال",topup:"شحن المحفظة"};
   h+='<div class="card"><h3>ملخص الحركات التجريبية</h3><div class="kv"><span>المصروفات</span><b class="out">'+mny(sp,3)+' د.ل</b></div><div class="bar"><i style="width:'+sp/mx*100+'%;background:var(--red)"></i></div><div class="kv"><span>الإيرادات</span><b class="in">'+mny(inc,3)+' د.ل</b></div><div class="bar"><i style="width:'+inc/mx*100+'%;background:var(--grn)"></i></div><small style="color:var(--mut)">محسوبة من '+D.tx.length+' حركة تجريبية.</small></div>'+spark()+'<div class="card"><h3>حسب النوع</h3>'+Object.keys(ct).map(function(k){return '<div class="kv"><span>'+(nm[k]||k)+'</span><b>'+mny(ct[k],3)+' د.ل</b></div>'}).join("")+'</div>'}
  return h+'</main>'+nav()}
 function sc(e){}
@@ -187,11 +187,11 @@ function cyc(){S.theme=S.theme==="auto"?"light":S.theme==="light"?"dark":"auto";
 function rs(){D=clone(DEF);save();tt("تمت إعادة ضبط البيانات التجريبية")}
 function lg(){return '<div class="login">'+BR()+'<p style="opacity:.85;margin:6px 0 60px">تسجيل الدخول</p><div class="card" style="color:var(--txt);text-align:right"><label>رقم الهاتف</label><input id="lu" inputmode="numeric" value="0912345678"><label>كلمة المرور</label><input id="lp" type="password" value="demo">'+(S.err?'<div class="err" role="alert">'+S.err+'</div>':'')+'<button class="btn" onclick="doL()">تسجيل الدخول</button></div></div>'}
 function doL(){var u=document.getElementById("lu").value.trim(),p=document.getElementById("lp").value;
- if(!u||!p)S.err="أدخل رقم الهاتف وكلمة المرور";else if(u!=="0912345678"||p!=="demo")S.err="البيانات غير صحيحة (استخدم حساب الاختبار)";else{S.err="";S.login=true;S.tab="home";S.v="";save()}rd()}
+ if(!u||!p)S.err="أدخل رقم الهاتف وكلمة المرور";else if(u!=="0912345678"||p!=="demo")S.err="البيانات غير صحيحة (استخدم حساب الاختبار)";else{S.err="";S.login=true;S.tab="home";S.v="";save()}rd();if(S.login&&S.pq){var pq=S.pq;S.pq=null;qrOpen(pq.code,pq.a)}}
 function rd(){
  var y=window.scrollY,a=document.getElementById("acc"),x=a?a.scrollLeft:0;
  var h='<div class="demo">نسخة تجريبية – بيانات وهمية، لا علاقة لها بأي مصرف حقيقي</div>',T=S.toast?'<div class="toast" role="status">'+S.toast+'</div>':"",b;
- if(!S.login){b=lg()}else if(S.v){b={store:store,prod:prod,rcpt:rcpt,hist:hist,txd:txd,xfer:xfer,sendv:sendv,srcpt:srcpt,topv:topv,recv:recv}[S.v]()}else b=S.tab==="home"?home():S.tab==="trf"?trf():prof();
+ if(!S.login){b=lg()}else if(S.v){b={store:store,prod:prod,rcpt:rcpt,hist:hist,txd:txd,xfer:xfer,sendv:sendv,srcpt:srcpt,topv:topv,recv:recv,qr:qrv,qrcf:qrcf,qrrc:qrrc}[S.v]()}else b=S.tab==="home"?home():S.tab==="trf"?trf():prof();
  document.getElementById("app").innerHTML=h+b+T;
  window.scrollTo(0,y);var n=document.getElementById("acc");if(n)n.scrollLeft=x}
 
@@ -208,7 +208,7 @@ function rd(){
  var y=window.scrollY,a=document.getElementById("acc"),x=a?a.scrollLeft:0;
  var off=(typeof navigator!=="undefined"&&navigator.onLine===false);
  var h=''+(off?'<div class="demo" style="background:#444;color:#fff" role="status">لا يوجد اتصال – تُعرض بيانات تجريبية محلية فقط</div>':''),T=S.toast?'<div class="toast" role="status">'+S.toast+'</div>':"",b;
- if(!S.login){b=lg()}else if(S.v){b={store:store,prod:prod,rcpt:rcpt,hist:hist,txd:txd,xfer:xfer,sendv:sendv,srcpt:srcpt,topv:topv,recv:recv}[S.v]()}else b=S.tab==="home"?home():S.tab==="trf"?trf():prof();
+ if(!S.login){b=lg()}else if(S.v){b={store:store,prod:prod,rcpt:rcpt,hist:hist,txd:txd,xfer:xfer,sendv:sendv,srcpt:srcpt,topv:topv,recv:recv,qr:qrv,qrcf:qrcf,qrrc:qrrc}[S.v]()}else b=S.tab==="home"?home():S.tab==="trf"?trf():prof();
  document.getElementById("app").innerHTML=h+b+T;
  window.scrollTo(0,y);var n=document.getElementById("acc");if(n)n.scrollLeft=x}
 if(window.addEventListener){window.addEventListener("online",function(){rd()});window.addEventListener("offline",function(){rd()})}
@@ -246,10 +246,91 @@ function spark(){
  var d=pts.map(function(v,i){return (i/(pts.length-1)*w).toFixed(1)+","+(h-8-(v-mn)/r*(h-16)).toFixed(1)}).join(" ");
  return '<div class="card"><h3>تطور رصيد المحفظة الرئيسية</h3><svg viewBox="0 0 300 80" width="100%" height="80" role="img" aria-label="رسم تطور الرصيد"><polyline points="'+d+'" fill="none" stroke="var(--pri)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></svg><small style="color:var(--mut)">من '+pts.length+' عملية مسجلة (الأقدم يسارًا)</small></div>'}
 function recv(){return hbar("استلام أموال","محاكاة تجريبية")+'<main><div class="card"><div class="kv"><span>رقم الهاتف</span><b dir="ltr">0912345678</b></div><div class="kv"><span>رقم المحفظة الرئيسية</span><b dir="ltr">'+A("cur").no+'</b></div><button class="btn" style="margin-top:12px" onclick="cp(\'0912345678\')">نسخ رقم الهاتف</button><small style="display:block;color:var(--mut);margin-top:10px">لا يصل أي مال فعلي: الاستلام من مستخدمين آخرين يحتاج خادمًا.</small></div></main>'+nav()}
+var QRE=(function(){
+var EXP=[],LOG=[];(function(){var x=1,i;for(i=0;i<255;i++){EXP[i]=x;LOG[x]=i;x<<=1;if(x&256)x^=285}for(i=255;i<512;i++)EXP[i]=EXP[i-255]})();
+function mul(a,b){return a&&b?EXP[LOG[a]+LOG[b]]:0}
+function rsc(d,n){var g=[1],i,j;for(i=0;i<n;i++){var ng=[];for(j=0;j<=g.length;j++)ng.push(0);for(j=0;j<g.length;j++){ng[j]^=g[j];ng[j+1]^=mul(g[j],EXP[i])}g=ng}
+var r=[];for(i=0;i<n;i++)r.push(0);d.forEach(function(b){var f=b^r[0];r.shift();r.push(0);for(var k=0;k<n;k++)r[k]^=mul(g[k+1],f)});return r}
+var V=[null,[26,19,7],[44,34,10],[70,55,15],[100,80,20]];
+function utf8(s){var o=[],i,c;s=unescape(encodeURIComponent(s));for(i=0;i<s.length;i++){c=s.charCodeAt(i);o.push(c)}return o}
+function bit(n,i){return (n>>>i)&1}
+function make(text){
+var b=utf8(text),v=0,i,j;for(i=1;i<=4;i++){if(b.length<=V[i][1]-2){v=i;break}}
+if(!v)return null;
+var tot=V[v][0],dc=V[v][1],ec=V[v][2],size=17+4*v,bits=[];
+function put(x,n){for(var k=n-1;k>=0;k--)bits.push(bit(x,k))}
+put(4,4);put(b.length,8);b.forEach(function(x){put(x,8)});
+for(i=0;i<4&&bits.length<dc*8;i++)bits.push(0);
+while(bits.length%8)bits.push(0);
+var cw=[];for(i=0;i<bits.length;i+=8){var q=0;for(j=0;j<8;j++)q=q*2+bits[i+j];cw.push(q)}
+for(i=0;cw.length<dc;i++)cw.push(i%2?17:236);
+cw=cw.concat(rsc(cw,ec));
+var m=[],f=[];for(i=0;i<size;i++){m.push([]);f.push([]);for(j=0;j<size;j++){m[i].push(false);f[i].push(false)}}
+function sf(x,y,d){m[y][x]=!!d;f[y][x]=true}
+function finder(cx,cy){for(var dy=-4;dy<=4;dy++)for(var dx=-4;dx<=4;dx++){var x=cx+dx,y=cy+dy;if(x<0||y<0||x>=size||y>=size)continue;var d=Math.max(Math.abs(dx),Math.abs(dy));sf(x,y,d!==2&&d!==4)}}
+finder(3,3);finder(size-4,3);finder(3,size-4);
+for(i=0;i<size;i++){if(!f[6][i])sf(i,6,i%2===0);if(!f[i][6])sf(6,i,i%2===0)}
+if(v>1){var c=size-7;for(var dy=-2;dy<=2;dy++)for(var dx=-2;dx<=2;dx++)sf(c+dx,c+dy,Math.max(Math.abs(dx),Math.abs(dy))!==1)}
+function fmt(mask){var data=(1<<3)|mask,rem=data;for(i=0;i<10;i++)rem=(rem<<1)^((rem>>>9)*0x537);var bt=((data<<10)|rem)^0x5412;
+for(i=0;i<=5;i++)sf(8,i,bit(bt,i));sf(8,7,bit(bt,6));sf(8,8,bit(bt,7));sf(7,8,bit(bt,8));for(i=9;i<15;i++)sf(14-i,8,bit(bt,i));
+for(i=0;i<8;i++)sf(size-1-i,8,bit(bt,i));for(i=8;i<15;i++)sf(8,size-15+i,bit(bt,i));sf(8,size-8,true)}
+fmt(0);
+var k=0,right,vert,jj,x,y,up;
+for(right=size-1;right>=1;right-=2){if(right===6)right=5;for(vert=0;vert<size;vert++)for(jj=0;jj<2;jj++){x=right-jj;up=((right+1)&2)===0;y=up?size-1-vert:vert;if(!f[y][x]&&k<cw.length*8){m[y][x]=!!bit(cw[k>>>3],7-(k&7));k++}}}
+function mk(mask,x,y){switch(mask){case 0:return (x+y)%2===0;case 1:return y%2===0;case 2:return x%3===0;case 3:return (x+y)%3===0;case 4:return (Math.floor(x/3)+Math.floor(y/2))%2===0;case 5:return x*y%2+x*y%3===0;case 6:return (x*y%2+x*y%3)%2===0;default:return ((x+y)%2+x*y%3)%2===0}}
+function apply(mask){for(y=0;y<size;y++)for(x=0;x<size;x++)if(!f[y][x]&&mk(mask,x,y))m[y][x]=!m[y][x]}
+function pen(){var p=0,r,c,run,col;
+for(r=0;r<size;r++){for(var pass=0;pass<2;pass++){run=1;for(c=1;c<size;c++){var a=pass?m[c][r]:m[r][c],bb=pass?m[c-1][r]:m[r][c-1];if(a===bb){run++;if(run===5)p+=3;else if(run>5)p++}else run=1}}}
+for(r=0;r<size-1;r++)for(c=0;c<size-1;c++){var s=m[r][c];if(s===m[r][c+1]&&s===m[r+1][c]&&s===m[r+1][c+1])p+=3}
+var dk=0;for(r=0;r<size;r++)for(c=0;c<size;c++)if(m[r][c])dk++;p+=Math.floor(Math.abs(dk*20-size*size*10)/(size*size))*10;return p}
+var best=0,bp=1e9;for(var mk2=0;mk2<8;mk2++){apply(mk2);fmt(mk2);var pp=pen();if(pp<bp){bp=pp;best=mk2}apply(mk2)}
+apply(best);fmt(best);return m}
+function svg(text,px){var m=make(text);if(!m)return "";var n=m.length,q=4,t=n+2*q,d="",x,y;for(y=0;y<n;y++)for(x=0;x<n;x++)if(m[y][x])d+="M"+(x+q)+" "+(y+q)+"h1v1h-1z";
+return '<svg viewBox="0 0 '+t+' '+t+'" width="'+(px||220)+'" height="'+(px||220)+'" shape-rendering="crispEdges" role="img" aria-label="رمز QR"><rect width="'+t+'" height="'+t+'" fill="#fff"/><path d="'+d+'" fill="#000"/></svg>'}
+return {make:make,svg:svg}})();
+var BASE="https://eslamlibya.github.io/Fanara-wallet/",MER={"FW-M-01":["مقهى الفنار",12500],"FW-M-02":["سوبرماركت الميناء",45000],"FW-M-03":["محطة الواحة للوقود",30000]};
+function payee(c){if(MER[c])return {name:MER[c][0],code:c,fix:MER[c][1]};
+ if(/^W-\d{4}-\d{4}-\d{4}$/.test(c)){if(D.accs.some(function(a){return a.no===c}))return {err:"لا يمكن الدفع إلى محفظتك نفسها"};return {name:"محفظة فنارة ••"+c.slice(-4),code:c}}
+ return {err:"رمز غير معروف في بيئة الاختبار"}}
+function qrParse(t){t=String(t||"").trim();var m=t.match(/[?&]pay=([^&#\s]+)/),a=t.match(/[?&]a=(\d+(?:\.\d{1,3})?)(?:[&#\s]|$)/);return {code:m?decodeURIComponent(m[1]):t.toUpperCase(),a:a?a[1]:""}}
+function qrOpen(code,a){var p=payee(code);if(p.err){tt(p.err);return}
+ var m=p.fix||(a?Math.round(parseFloat(a)*1000):0);if(!p.fix&&a)p.fix=m;
+ vw("qrcf",{qp:{name:p.name,code:p.code,m:m,fix:!!p.fix,k:Math.random()}})}
+function qrHandle(t){var q=qrParse(t);qrOpen(q.code,q.a)}
+function qrGo(){var v=document.getElementById("qc").value;if(!v.trim()){S.err="أدخل رمز الدفع أو الرابط";rd();return}S.err="";qrHandle(v)}
+var CAM=null;
+function camStop(){if(CAM){try{CAM.stream.getTracks().forEach(function(t){t.stop()})}catch(e){}clearInterval(CAM.t);CAM=null}var e=document.getElementById("camov");if(e&&e.parentNode)e.parentNode.removeChild(e)}
+function camOpen(){
+ if(!("BarcodeDetector" in window)||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){tt("مسح الكاميرا داخل التطبيق غير مدعوم في هذا المتصفح. امسح الرمز بكاميرا الهاتف العادية، أو الصق الرمز/الرابط");return}
+ camStop();var el=document.createElement("div");el.id="camov";el.className="ov";el.innerHTML='<div class="sheet" style="text-align:center"><h3>وجّه الكاميرا نحو رمز QR</h3><video id="cv" playsinline muted style="width:100%;border-radius:14px;background:#000;margin-bottom:10px"></video><button class="btn o" onclick="camStop()">إغلاق</button></div>';document.body.appendChild(el);
+ navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}}).then(function(st){if(!document.getElementById("camov")){st.getTracks().forEach(function(t){t.stop()});return}
+  CAM={stream:st};var v=document.getElementById("cv");v.srcObject=st;v.play();var d=new BarcodeDetector({formats:["qr_code"]});
+  CAM.t=setInterval(function(){d.detect(v).then(function(r){if(r.length){var t=r[0].rawValue;camStop();qrHandle(t)}}).catch(function(){})},400)}).catch(function(){camStop();tt("تعذر فتح الكاميرا – تحقق من إذن الكاميرا")})}
+function qrv(){
+ var t=S.qt||"pay",tabs=[["pay","ادفع"],["rcv","استلم"]].map(function(x){return '<button class="chip '+(t===x[0]?"on":"")+'" onclick="S.qt=\''+x[0]+'\';S.err=\'\';rd()">'+x[1]+'</button>'}).join("");
+ var b;
+ if(t==="pay"){b='<div class="card"><button class="btn" onclick="camOpen()">مسح رمز QR بالكاميرا</button><small style="display:block;color:var(--mut);margin:10px 0">على الآيفون: يمكنك أيضًا مسح الرمز بتطبيق الكاميرا العادي، فيفتح رابط التطبيق ويصل إلى شاشة التأكيد.</small><label>أو الصق رمز الدفع / الرابط</label><input id="qc" dir="ltr" placeholder="FW-M-01 أو W-1001-2345-0001"'+(S.qcv?' value="'+esc(S.qcv)+'"':'')+'>'+(S.err?'<div class="err" role="alert">'+S.err+'</div>':'')+'<button class="btn o" onclick="qrGo()">متابعة</button></div><div class="card"><h3>متاجر تجريبية</h3>'+Object.keys(MER).map(function(k){return li("card",MER[k][0],mny(MER[k][1],3)+" د.ل","qrOpen(\'"+k+"\')")}).join("")+'<small style="color:var(--mut)">محاكاة: اختيار المتجر يُعادل مسح رمزه.</small></div>'}
+ else{var a=S.ra||"",pl=BASE+"?pay="+A("cur").no+(a?"&a="+a:"");
+  b='<div class="card" style="text-align:center"><h3>رمز الاستلام</h3><div style="display:inline-block;background:#fff;padding:6px;border-radius:14px">'+QRE.svg(pl,230)+'</div><div class="kv" style="margin-top:12px"><span>المحفظة</span><b dir="ltr">'+A("cur").no+'</b></div>'+(a?kv("المبلغ المطلوب",a+" د.ل"):"")+'<button class="btn o" style="margin-top:10px" onclick="cp(\''+pl+'\')">نسخ الرابط</button></div><div class="card"><label>مبلغ محدد (اختياري، د.ل)</label><input id="ra" inputmode="decimal" placeholder="0.000" value="'+esc(a)+'">'+(S.err?'<div class="err" role="alert">'+S.err+'</div>':'')+'<button class="btn" onclick="qrAmt()">تحديث الرمز</button><small style="display:block;color:var(--mut);margin-top:8px">محاكاة: لا يصل أي مال فعلي.</small></div>'}
+ return hbar("الدفع برمز QR","محاكاة تجريبية")+'<main><div class="chips">'+tabs+'</div>'+b+'</main>'+nav()}
+function qrAmt(){var v=document.getElementById("ra").value.trim();if(v&&(!/^\d+(\.\d{1,3})?$/.test(v)||parseFloat(v)<=0||v.length>11)){S.err="أدخل مبلغًا صحيحًا (حتى 3 منازل عشرية)";rd();return}S.err="";S.ra=v;rd()}
+function qrcf(){var q=S.qp;if(!q){return qrv()}
+ return hbar("تأكيد الدفع","محاكاة تجريبية")+'<main><div class="card">'+kv("المستلم",esc(q.name))+kv("رمز المستلم",'<span dir="ltr">'+esc(q.code)+'</span>')+kv("من محفظة",A("cur").n)+kv("الرصيد المتاح",mny(A("cur").m,3)+" د.ل")+'<label>المبلغ (د.ل)</label><input id="qa" inputmode="decimal" placeholder="0.000" value="'+(q.m?mny(q.m,3).replace(/,/g,""):"")+'"'+(q.fix?" readonly":"")+'>'+(S.err?'<div class="err" role="alert">'+S.err+'</div>':'')+'<small style="color:var(--mut);display:block;margin:8px 0">لا رسوم على الدفع برمز QR. محاكاة فقط: لا يُرسل أي مال حقيقي.</small><button class="btn" onclick="qpay()">تأكيد الدفع</button><button class="btn o" onclick="S.qp=null;S.v=\'qr\';rd()">إلغاء</button></div></main>'+nav()}
+function qpay(){var q=S.qp;if(!q||S.busy||S.su===q.k)return;
+ var v=document.getElementById("qa").value.trim(),m;
+ if(q.fix)m=q.m;else{if(!/^\d+(\.\d{1,3})?$/.test(v)){S.err="أدخل مبلغًا صحيحًا (حتى 3 منازل عشرية)";rd();return}m=Math.round(parseFloat(v)*1000)}
+ if(m<=0){S.err="يجب أن يكون المبلغ أكبر من صفر";rd();return}
+ if(m>A("cur").m){S.err="الرصيد غير كافٍ";rd();return}
+ S.busy=true;S.su=q.k;
+ try{var t=post("cur",-m,"دفع QR إلى "+q.name,"qr");save();S.qo={n:q.name,c:q.code,m:m,t:t};S.qp=null;S.v="qrrc";S.err=""}catch(e){S.err=e.message}
+ S.busy=false;rd()}
+function qrrc(){var o=S.qo;return hbar("إيصال الدفع","تجريبي")+'<main><div class="card" style="text-align:center"><div class="ic" style="background:rgba(42,157,98,.12);color:var(--grn);width:64px;height:64px;border-radius:50%">'+I("check",34)+'</div><h3>تم الدفع التجريبي</h3></div><div class="card">'+kv("المستلم",esc(o.n))+kv("المبلغ",mny(o.m,3)+" د.ل")+kv("الرقم المرجعي",o.t.ref)+kv("التاريخ",o.t.date)+kv("الرصيد بعد العملية",mny(o.t.bal,3)+" د.ل")+'<small style="color:var(--mut)">محاكاة فقط: لم يُرسل أي مال حقيقي.</small></div><button class="btn" onclick="vw(\'hist\')">سجل الحركات</button></main>'+nav()}
 function cp(t){try{navigator.clipboard.writeText(t).then(function(){tt("تم النسخ")},function(){tt("تعذر النسخ")})}catch(e){tt("تعذر النسخ")}}
 var _vw=vw;vw=function(v,x){_vw(v,x);try{history.pushState({v:v},"")}catch(e){}};
 if(window.addEventListener){window.addEventListener("popstate",function(){if(S.v)back()})}
-ld();ap();rd();
+ld();ap();
+try{var _q=location.search.match(/[?&]pay=([^&#]+)/);if(_q){var _a=location.search.match(/[?&]a=(\d+(?:\.\d{1,3})?)/);S.pq={code:decodeURIComponent(_q[1]),a:_a?_a[1]:""};history.replaceState({},"",location.pathname)}}catch(e){}
+rd();if(S.login&&S.pq){var _p=S.pq;S.pq=null;qrOpen(_p.code,_p.a)}
 if("serviceWorker" in navigator&&location.protocol!=="file:"){navigator.serviceWorker.register("sw.js").catch(function(){})}
 </script>
 </body>
